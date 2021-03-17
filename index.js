@@ -1,19 +1,26 @@
 import express from 'express';
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
-mongoose.connect(
-  'mongodb+srv://hoang:142536@shop-mnml.et8ke.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
-const app = express();
+
+// config variable environment
 config();
-app.use('/', (req, res) => {
+
+const app = express();
+app.use('/', (_, res) => {
   res.send('<h1>hello world</h1>').end();
 });
+//connect mongodb
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
 
-app.listen(4000, () => {
+const db = mongoose.connection;
+db.on('error', (err) => {
+  console.error(err);
+});
+db.on('open', () => {
+  app.listen(4000, () => {});
   console.log('listen on port 4000');
 });
