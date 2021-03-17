@@ -1,9 +1,7 @@
-import express from 'express';
-import { config } from 'dotenv';
-import mongoose from 'mongoose';
-
+const express = require('express');
+const mongoose = require('mongoose');
 // config variable environment
-config();
+require('dotenv').config();
 
 const app = express();
 app.use('/', (_, res) => {
