@@ -10,6 +10,7 @@ const productSchema = new Schema ({
    size:{type: String, required: true},
    productType:{type: String, required: true}
 });
+
 productSchema.methods.getAllProducts = function (){
     return this.find().exec()
 }

@@ -1,19 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Product = require("./models/ProductModel")
-const {Schema} = mongoose;
+const parser = require("body-parser")
+var cors = require('cors')
+const { Schema } = mongoose;
+const productRoute = require("./routes/productRoute");
+const bodyParser = require('body-parser');
 // config variable environment
 require('dotenv').config();
 
 const app = express();
-app.get('/products', (req, res, next) => {
-// res.send("hello, " + req.params.id)
-Product.find().exec().then(listProducst =>{
-    res.json({list : listProducst})
-}).catch((err )=>{
-console.error(err)
+//parse urlencoded
+app.use(bodyParser.urlencoded())
+// parse json req
+app.use(bodyParser.json())
+app.use(cors())
+app.use("/api/",productRoute);
+app.use((_, res)=>{
+  res.send("hello there")
 })
-});
 
 
 //connect mongodb
@@ -28,11 +33,19 @@ db.on('error', (err) => {
   console.error(err);
 });
 db.on('open', () => {
-  app.listen(4000, async() => {
+  app.listen(4000, async () => {
 
-      console.log('listen on port 4000');
-        // const product1 = new Product ({name :"huy", count : 10, create_by: "hoang", })
-        // await product1.save()
-    });
-    
+    console.log('listen on port 4000');
+    // const product1 = new Product({
+    //   name: "name3",
+    //   price: 10,
+    //   imageURL: "https://cdn.shopify.com/s/files/1/1300/6871/products/tech-cargo-pants-khaki-2_650x975.jpg?v=1547929626",
+    //   color: ["red", "green","blue"],
+    //   mainColor: "#2EFEF7",
+    //   size: "L",
+    //   productType: "sale"
+    // })
+    // await product1.save()
+  });
+
 });
