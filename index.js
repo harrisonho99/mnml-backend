@@ -1,25 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Product = require("./models/ProductModel")
-const parser = require("body-parser")
-var cors = require('cors')
+const Product = require('./models/ProductModel');
+const parser = require('body-parser');
+const cors = require('cors');
 const { Schema } = mongoose;
-const productRoute = require("./routes/productRoute");
+const productRoute = require('./routes/productRoute');
 const bodyParser = require('body-parser');
 // config variable environment
 require('dotenv').config();
 
 const app = express();
 //parse urlencoded
-app.use(bodyParser.urlencoded())
+app.use(bodyParser.urlencoded());
 // parse json req
-app.use(bodyParser.json())
-app.use(cors())
-app.use("/api/",productRoute);
-app.use((_, res)=>{
-  res.send("hello there")
-})
-
+app.use(bodyParser.json());
+app.use(cors());
+app.use('/api/', productRoute);
+app.use((_, res) => {
+  res.send('hello there');
+});
 
 //connect mongodb
 mongoose.connect(process.env.MONGO_URL, {
@@ -34,7 +33,6 @@ db.on('error', (err) => {
 });
 db.on('open', () => {
   app.listen(4000, async () => {
-
     console.log('listen on port 4000');
     // const product1 = new Product({
     //   name: "name3",
@@ -47,5 +45,4 @@ db.on('open', () => {
     // })
     // await product1.save()
   });
-
 });
