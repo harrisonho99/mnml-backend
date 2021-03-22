@@ -1,36 +1,55 @@
 //DEFINE TYPE OF OPTION
 // let OPTION = {
 //   key: {
-//     dbField: "price"
-//     selecType: 'RANGE',
+//     field: "price"
+//     selectType: 'RANGE',
 //     value: [0, 1],
 //   },
 //   key: {
-//     dbField: "mainColor"
-//     selecType: 'SIGLE_OF_ARRAY',
+//     field: "mainColor"
+//     selectType: 'SIGLE_OF_ARRAY',
 //     value: ['black', 'red'],
 //   },
-//   key: null,
-// };
+//   key: {
+//     field: "mainColor"
+//     selectType: 'SIGLE_OF_ARRAY',
+//     value: null,
+// },
 
 function hanldeMultipleFilter(option, queryObj, callback) {
-  let query = queryObj;
+  //   let query = queryObj;
+  //   console.log(queryObj);
+  //   console.log('====================================');
+  //   console.log(option);
+  //   console.log('====================================');
   for (key in option) {
-    if (!option[key]) {
+    if (!option[key].value) {
+      //   console.log(key);
       continue;
     }
-    switch (option.key.selecType) {
+    let fieldName;
+    // console.log(option[key].selectType);
+    switch (option[key].selectType) {
       case 'RANGE':
-        return query.find({
-          key: { $gte: option.key[0], $lte: option.key[1] },
-        });
+        fieldName = option[key].field;
+        let filter = {
+          [fieldName]: {
+            $gte: option[key].value[0],
+            $lte: option[key].value[1],
+          },
+        };
+        // console.log(filter);
+        queryObj.find(filter);
+        continue;
       case 'SIGLE_OF_ARRAY':
-        return query.find({ key: option.key });
+        fieldName = option[key].field;
+        queryObj.find({ [fieldName]: option[key].value });
+        continue;
       default:
-        return query;
+        continue;
     }
   }
-  return query
+  return queryObj
     .exec()
     .then((data) => {
       callback(null, data);

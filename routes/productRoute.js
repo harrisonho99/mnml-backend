@@ -14,10 +14,15 @@ route.get('/allproducts', (req, res, next) => {
       console.error(err);
     });
 });
-route.post('/filter', (req, res, next) => {
-  console.log(req.body);
-  // hanldeMultipleFilter(req.body);
-  res.end();
+route.post('/filter', (req, res) => {
+  const option = req.body;
+  const query = Product.find();
+
+  hanldeMultipleFilter(option, query, (err, data) => {
+    if (err) throw err;
+    console.log(data);
+    res.send(data);
+  });
 });
 
 route.get('/allproducts/:id', (req, res, next) => {
