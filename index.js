@@ -1,9 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Product = require('./models/ProductModel');
-const parser = require('body-parser');
 const cors = require('cors');
-const { Schema } = mongoose;
 const productRoute = require('./routes/productRoute');
 const bodyParser = require('body-parser');
 // config variable environment
@@ -11,10 +8,12 @@ require('dotenv').config();
 
 const app = express();
 //parse urlencoded
-app.use(bodyParser.urlencoded());
+// app.use()
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse json req
 app.use(bodyParser.json());
 app.use(cors());
+//api route
 app.use('/api/', productRoute);
 app.use((_, res) => {
   res.send('hello there');
