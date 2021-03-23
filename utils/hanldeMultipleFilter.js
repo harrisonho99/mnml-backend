@@ -17,11 +17,6 @@
 // },
 
 function hanldeMultipleFilter(option, queryObj, callback) {
-  //   let query = queryObj;
-  //   console.log(queryObj);
-  //   console.log('====================================');
-  //   console.log(option);
-  //   console.log('====================================');
   for (key in option) {
     if (!option[key].value) {
       //   console.log(key);
