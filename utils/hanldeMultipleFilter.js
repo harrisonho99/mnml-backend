@@ -19,11 +19,9 @@
 function hanldeMultipleFilter(option, queryObj, callback) {
   for (key in option) {
     if (!option[key].value) {
-      //   console.log(key);
       continue;
     }
     let fieldName;
-    // console.log(option[key].selectType);
     switch (option[key].selectType) {
       case 'RANGE':
         fieldName = option[key].field;
@@ -33,7 +31,6 @@ function hanldeMultipleFilter(option, queryObj, callback) {
             $lte: option[key].value[1],
           },
         };
-        // console.log(filter);
         queryObj.find(filter);
         continue;
       case 'SIGLE_OF_ARRAY':

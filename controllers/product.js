@@ -24,7 +24,7 @@ exports.postFilterProduct = (req, res) => {
   });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = (req, res) => {
   Product.findById(req.params.id)
     .exec()
     .then((product) => {
