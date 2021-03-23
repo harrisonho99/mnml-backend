@@ -1,4 +1,3 @@
-const hanldeMultipleFilter = require('../utils/hanldeMultipleFilter');
 const express = require('express');
 const { Router } = express;
 const route = Router();

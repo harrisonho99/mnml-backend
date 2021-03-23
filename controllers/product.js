@@ -1,4 +1,5 @@
 const Product = require('../models/ProductModel');
+const hanldeMultipleFilter = require('../utils/hanldeMultipleFilter');
 
 exports.getAllProduct = (_, res) => {
   Product.find()
