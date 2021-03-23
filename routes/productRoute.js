@@ -19,8 +19,10 @@ route.post('/filter', (req, res) => {
   const query = Product.find();
 
   hanldeMultipleFilter(option, query, (err, data) => {
-    if (err) throw err;
-    console.log(data);
+    if (err) {
+      return res.status(404).send({ error: 'some error occured' });
+    }
+    // console.log(data);
     res.send(data);
   });
 });
