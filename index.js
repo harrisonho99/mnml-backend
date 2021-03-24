@@ -6,11 +6,11 @@ const authRoute = require('./routes/authRoute');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
+const firebaseAdmin = require('firebase-admin');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models/UserModel');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
-
 // config variable environment
 require('dotenv').config();
 
@@ -29,6 +29,7 @@ app.use(
     cookie: { maxAge: 6055500 },
   })
 );
+
 // parse cookie
 app.use(cookieParser());
 //parse urlencoded
@@ -40,7 +41,33 @@ app.use(cors());
 // init passport && configure passport
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport.session());
+
+// firebase admin sdk
+const defaultApp = firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.applicationDefault(),
+});
+// firebase auth
+const defaultAuth = defaultApp.auth();
+// define  user
+const user = {
+  email: 'hoang@mail.com',
+  emailVerified: false,
+  phoneNumber: '+84886617060',
+  password: '123456',
+  displayName: 'hoang ho',
+  disabled: false,
+};
+// create instance user
+// defaultAuth
+//   .createUser(user)
+//   .then((userRecord) => {
+//     console.log('====================================');
+//     console.log(userRecord);
+//     console.log('====================================');
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 // credential passport
 passport.use(
