@@ -1,25 +1,76 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Product = require("./models/ProductModel")
-const parser = require("body-parser")
-var cors = require('cors')
-const { Schema } = mongoose;
-const productRoute = require("./routes/productRoute");
+const cors = require('cors');
+const productRoute = require('./routes/productRoute');
+const authRoute = require('./routes/authRoute');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('./models/UserModel');
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
+
 // config variable environment
 require('dotenv').config();
 
 const app = express();
-//parse urlencoded
-app.use(bodyParser.urlencoded())
-// parse json req
-app.use(bodyParser.json())
-app.use(cors())
-app.use("/api/",productRoute);
-app.use((_, res)=>{
-  res.send("hello there")
-})
+//set test engine
+app.set('view engine', 'ejs');
 
+// flash
+app.use(flash());
+//session config
+app.use(
+  session({
+    secret: process.env.SESSION,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 6055500 },
+  })
+);
+// parse cookie
+app.use(cookieParser());
+//parse urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse json
+app.use(bodyParser.json());
+// allow cors
+app.use(cors());
+// init passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// credential passport
+passport.use(
+  new LocalStrategy((userName, password, done) => {
+    User.findOne({ userName })
+      .exec()
+      .then((user) => {
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        } else if (user.password !== password) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      })
+      .catch((err) => {
+        process.stdout.write(err.toString());
+        done(err);
+      });
+  })
+);
+//api route
+app.get('/', (_, res) => {
+  res.render('index');
+});
+app.use('/api/', productRoute);
+app.use('/api/', authRoute);
+
+// not found route
+app.use((_, res) => {
+  res.send('Route is not handled yet!');
+});
 
 //connect mongodb
 mongoose.connect(process.env.MONGO_URL, {
@@ -28,24 +79,15 @@ mongoose.connect(process.env.MONGO_URL, {
   useCreateIndex: true,
 });
 
+const PORT = process.env.PORT || 4000;
 const db = mongoose.connection;
 db.on('error', (err) => {
   console.error(err);
 });
 db.on('open', () => {
-  app.listen(4000, async () => {
-
-    console.log('listen on port 4000');
-    // const product1 = new Product({
-    //   name: "name3",
-    //   price: 10,
-    //   imageURL: "https://cdn.shopify.com/s/files/1/1300/6871/products/tech-cargo-pants-khaki-2_650x975.jpg?v=1547929626",
-    //   color: ["red", "green","blue"],
-    //   mainColor: "#2EFEF7",
-    //   size: "L",
-    //   productType: "sale"
-    // })
-    // await product1.save()
+  // const user = new User({ userName: 'nhathoang', password: '12345' });
+  // user.save();
+  app.listen(PORT, async () => {
+    process.stdout.write('listening on port 4000');
   });
-
 });
