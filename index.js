@@ -57,6 +57,10 @@ const user = {
   displayName: 'hoang ho',
   disabled: false,
 };
+
+defaultAuth.getUser(process.env.USER).then((user) => {
+  console.log(user);
+});
 // create instance user
 // defaultAuth
 //   .createUser(user)
