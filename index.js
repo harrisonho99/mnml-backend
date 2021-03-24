@@ -37,28 +37,32 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // allow cors
 app.use(cors());
-// init passport
+// init passport && configure passport
 app.use(passport.initialize());
+app.use(passport.session());
 app.use(passport.session());
 
 // credential passport
 passport.use(
-  new LocalStrategy((userName, password, done) => {
-    User.findOne({ userName })
-      .exec()
-      .then((user) => {
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        } else if (user.password !== password) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-      })
-      .catch((err) => {
-        process.stdout.write(err.toString());
-        done(err);
-      });
-  })
+  new LocalStrategy(
+    { usernameField: 'userName', passwordField: 'password' },
+    (userName, password, done) => {
+      User.findOne({ userName })
+        .exec()
+        .then((user) => {
+          if (!user) {
+            return done(null, false, { message: 'Incorrect username.' });
+          } else if (user.password !== password) {
+            return done(null, false, { message: 'Incorrect password.' });
+          }
+          return done(null, user);
+        })
+        .catch((err) => {
+          process.stdout.write(err.toString());
+          done(err);
+        });
+    }
+  )
 );
 //api route
 app.get('/', (_, res) => {
