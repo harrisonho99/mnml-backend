@@ -173,4 +173,4 @@ $RECYCLE.BIN/
 
 .vercel
 
-./utils/mongo_password.txt
+mongo_password.txt

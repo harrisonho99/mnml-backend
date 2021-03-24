@@ -11,8 +11,5 @@ const productSchema = new Schema({
   productType: { type: String, required: true },
 });
 
-productSchema.methods.getAllProducts = function () {
-  return this.find().exec();
-};
 const Product = mongoose.model('Product', productSchema);
 module.exports = Product;
